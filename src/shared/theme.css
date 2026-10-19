@@ -1,0 +1,127 @@
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: "Geist Variable", "Segoe UI Variable", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, Consolas, monospace;
+  --text-xs: 11.5px;
+  --text-xs--line-height: 16px;
+  --text-sm: 13px;
+  --text-sm--line-height: 18px;
+  --text-lg: 17px;
+  --text-lg--line-height: 24px;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-field: var(--field);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-hover: var(--hover);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+}
+
+:root {
+  --bg: #f3f2ee;
+  --surface: #fafaf8;
+  --field: #ffffff;
+  --ink: #1c1b19;
+  --muted: #75716a;
+  --faint: #a39f97;
+  --line: #e5e2db;
+  --line-strong: #d6d2c9;
+  --hover: rgb(28 27 25 / 0.06);
+  --accent: #c8432a;
+  --danger: #b3261e;
+  --ok: #2f7d4a;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141413;
+    --surface: #1b1a19;
+    --field: #22211f;
+    --ink: #ebe9e4;
+    --muted: #9a958c;
+    --faint: #66625b;
+    --line: #2c2a27;
+    --line-strong: #3a3834;
+    --hover: rgb(235 233 228 / 0.07);
+    --accent: #ec6f55;
+    --danger: #f2796b;
+    --ok: #6cc28a;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #141413;
+  --surface: #1b1a19;
+  --field: #22211f;
+  --ink: #ebe9e4;
+  --muted: #9a958c;
+  --faint: #66625b;
+  --line: #2c2a27;
+  --line-strong: #3a3834;
+  --hover: rgb(235 233 228 / 0.07);
+  --accent: #ec6f55;
+  --danger: #f2796b;
+  --ok: #6cc28a;
+  color-scheme: dark;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+    cursor: default;
+  }
+
+  /* Not `scrollbar-width: thin`: Chromium then ignores these and still draws arrow buttons. The transparent border keeps a 10px hit area around a 4px thumb. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background: var(--line-strong) padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--faint);
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    appearance: none;
+  }
+}
+
+@utility focus-ring {
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    outline-offset: 1px;
+  }
+}
