@@ -26,6 +26,7 @@ pub fn run() {
             commands::style_presets,
             commands::save_settings,
             commands::translate,
+            commands::list_models,
             commands::resize_popup,
             commands::hide_popup,
         ])
@@ -35,7 +36,7 @@ pub fn run() {
             if let Err(e) = hotkey::register(app.handle(), &loaded.hotkey) {
                 eprintln!("{e}");
             }
-            let first_run = loaded.api_key.is_empty();
+            let first_run = loaded.api_key().is_empty();
             app.manage(settings::SettingsState(Mutex::new(loaded)));
             tray::create(app)?;
             if first_run {

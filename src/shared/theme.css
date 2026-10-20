@@ -90,6 +90,13 @@
     cursor: default;
   }
 
+  /* Tailwind's preflight resets buttons to the default cursor. Tabs, switches and select triggers are buttons too. */
+  button:not(:disabled),
+  [role="menuitem"]:not([data-disabled]),
+  [role="option"]:not([data-disabled]) {
+    cursor: pointer;
+  }
+
   /* Not `scrollbar-width: thin`: Chromium then ignores these and still draws arrow buttons. The transparent border keeps a 10px hit area around a 4px thumb. */
   ::-webkit-scrollbar {
     width: 10px;
@@ -123,5 +130,10 @@
   &:focus-visible {
     outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
     outline-offset: 1px;
+  }
+
+  /* See input-modality.ts. Text fields keep the ring, as browsers show it for them on click too. */
+  :root[data-pointer] &:not(input, textarea):focus-visible {
+    outline: none;
   }
 }

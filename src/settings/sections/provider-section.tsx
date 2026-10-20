@@ -1,5 +1,7 @@
+import { ApiKeyField } from "@/settings/components/api-key-field";
 import { NumberField, SelectField, TextField } from "@/settings/components/fields";
 import { Group } from "@/settings/components/group";
+import { ModelField } from "@/settings/components/model-field";
 import { Page } from "@/settings/components/page";
 import { ProviderField } from "@/settings/components/provider-field";
 import { useSettings } from "@/settings/settings-context";
@@ -12,11 +14,11 @@ export function ProviderSection() {
       <Group title="Connection">
         <ProviderField />
         <TextField name="baseUrl" label="Base URL" mono />
-        <TextField name="model" label="Model" mono />
-        <TextField name="apiKey" label="API key" type="password" hint="Stored in plain text. Leave empty for local servers." mono />
+        <ModelField />
+        <ApiKeyField />
       </Group>
       <Group title="Request">
-        {settings.provider === "anthropic" && (
+        {settings.apiFormat === "anthropic" && (
           <SelectField
             name="effort"
             label="Effort"

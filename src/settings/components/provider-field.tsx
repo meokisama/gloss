@@ -12,13 +12,13 @@ const CUSTOM = "custom";
 export function ProviderField() {
   const { settings, update } = useSettings();
   const [custom, setCustom] = useState(false);
-  const matched = PROVIDER_PRESETS.find((p) => p.provider === settings.provider && p.baseUrl === settings.baseUrl);
+  const matched = PROVIDER_PRESETS.find((p) => p.apiFormat === settings.apiFormat && p.baseUrl === settings.baseUrl);
   const selected = custom || !matched ? CUSTOM : matched.name;
 
   const choose = (name: string) => {
     const preset = PROVIDER_PRESETS.find((p) => p.name === name);
     setCustom(!preset);
-    if (preset) update({ provider: preset.provider, baseUrl: preset.baseUrl, model: preset.model });
+    if (preset) update({ apiFormat: preset.apiFormat, baseUrl: preset.baseUrl, model: preset.model });
   };
 
   return (
@@ -33,7 +33,7 @@ export function ProviderField() {
       </Row>
       {selected === CUSTOM && (
         <SelectField
-          name="provider"
+          name="apiFormat"
           label="API format"
           options={[
             ["openai", "OpenAI-compatible"],

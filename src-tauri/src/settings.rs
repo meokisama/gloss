@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::sync::Mutex;
 
 use serde::{Deserialize, Serialize};
@@ -14,7 +15,7 @@ Output only the translation: no quotes, no preamble. Keep line breaks, code, URL
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub enum ProviderKind {
+pub enum ApiFormat {
     #[default]
     Openai,
     Anthropic,
@@ -38,9 +39,12 @@ pub struct Settings {
     pub hotkey: String,
     pub launch_at_login: bool,
 
-    pub provider: ProviderKind,
+    /// Not the provider: OpenAI, OpenRouter, Groq and the rest all speak `Openai`. The base URL tells providers apart.
+    #[serde(alias = "provider")]
+    pub api_format: ApiFormat,
     pub base_url: String,
-    pub api_key: String,
+    /// Keyed by base URL, so each provider keeps its own key.
+    pub api_keys: BTreeMap<String, String>,
     pub model: String,
     /// Anthropic `output_config.effort`; empty means the parameter is not sent.
     pub effort: String,
@@ -70,9 +74,9 @@ impl Default for Settings {
         Self {
             hotkey: "Alt+Q".into(),
             launch_at_login: false,
-            provider: ProviderKind::Openai,
+            api_format: ApiFormat::Openai,
             base_url: "https://api.openai.com/v1".into(),
-            api_key: String::new(),
+            api_keys: BTreeMap::new(),
             model: "gpt-5-mini".into(),
             effort: "low".into(),
             timeout_secs: 60,
@@ -93,6 +97,12 @@ impl Default for Settings {
             show_source: true,
             last_popup_pos: None,
         }
+    }
+}
+
+impl Settings {
+    pub fn api_key(&self) -> &str {
+        self.api_keys.get(&self.base_url).map_or("", String::as_str)
     }
 }
 

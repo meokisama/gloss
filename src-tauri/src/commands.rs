@@ -39,6 +39,12 @@ pub async fn translate(app: AppHandle, text: String, style: String, settings: Op
     translate::translate(&s, &text, &style).await
 }
 
+/// Takes the unsaved settings so the list matches the key and base URL being edited.
+#[tauri::command]
+pub async fn list_models(settings: Settings) -> Result<Vec<String>, String> {
+    translate::list_models(&settings).await
+}
+
 #[tauri::command]
 pub fn resize_popup(app: AppHandle, height: f64, keep_position: bool) {
     popup::resize(&app, height, keep_position);

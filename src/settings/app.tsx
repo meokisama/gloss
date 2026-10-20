@@ -38,7 +38,7 @@ export function App() {
             <form className="flex min-h-0 flex-1" onSubmit={onSubmit}>
               <Nav pages={PAGES} />
               <main className="flex min-w-0 flex-1 flex-col rounded-tl-xl border-l border-t border-line bg-surface">
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
                   {PAGES.map(({ id, Content }) => (
                     <Tabs.Content key={id} value={id} className="outline-none">
                       <Content />

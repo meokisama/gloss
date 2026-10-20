@@ -2,9 +2,10 @@
 export interface Settings {
   hotkey: string;
   launchAtLogin: boolean;
-  provider: "openai" | "anthropic" | "gemini";
+  apiFormat: "openai" | "anthropic" | "gemini";
   baseUrl: string;
-  apiKey: string;
+  /** Keyed by base URL. */
+  apiKeys: Record<string, string>;
   model: string;
   effort: string;
   timeoutSecs: number;
