@@ -6,7 +6,7 @@
   <p><strong>Select text in any app. Press a hotkey. Read the translation.</strong></p>
 
   <p>
-    <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-6366f1?style=flat-square">
+    <img alt="Version" src="https://img.shields.io/github/v/release/meokisama/gloss?style=flat-square&color=6366f1">
     <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS-0ea5e9?style=flat-square">
     <img alt="Tauri" src="https://img.shields.io/badge/Tauri-2-24c8db?style=flat-square&logo=tauri&logoColor=white">
     <img alt="React" src="https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black">
@@ -74,6 +74,16 @@ npm run tauri build    # installer in src-tauri/target/release/bundle
 ```
 
 Built with [Tauri 2](https://tauri.app), React 19, Tailwind CSS 4 and Rust.
+
+## Releasing
+
+Run `npm run release:patch` (or `release:minor`, `release:major`) on a clean tree. It bumps `package.json`, which is the app
+version, commits, tags and pushes. GitHub Actions builds Windows and macOS, publishes the release and its `latest.json`. Running apps check it every
+6 hours, download the update in the background and offer "Restart to update" in the tray menu.
+
+Updates are signed. `plugins.updater.pubkey` in `tauri.conf.json` holds the public key; the repo secrets
+`TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` hold the private key. Losing it means installed apps can
+no longer update.
 
 ## Known limitations
 

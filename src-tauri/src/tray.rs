@@ -6,6 +6,7 @@ use tauri::{App, AppHandle, Emitter, Manager};
 use crate::languages::LANGUAGES;
 use crate::settings::{self, Settings};
 use crate::translate::STYLES;
+use crate::update;
 
 const TRAY_ID: &str = "main";
 const SETTINGS_LABEL: &str = "main";
@@ -19,6 +20,7 @@ pub fn create(app: &App) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {
             "settings" => show_settings(app),
+            "update" => update::install(app),
             "quit" => app.exit(0),
             id => {
                 if let Some((field, value)) = id.split_once(':').filter(|(field, _)| FIELDS.contains(field)) {
@@ -55,7 +57,7 @@ pub fn show_settings(app: &AppHandle) {
 
 fn menu(app: &AppHandle, s: &Settings) -> tauri::Result<Menu<tauri::Wry>> {
     let styles: Vec<(&str, &str)> = STYLES.iter().map(|p| (p.id, p.label)).collect();
-    Menu::with_items(
+    let menu = Menu::with_items(
         app,
         &[
             &choice_menu(app, "Translate into", "targetLang", &s.target_lang, &languages(&s.target_lang))?,
@@ -67,7 +69,14 @@ fn menu(app: &AppHandle, s: &Settings) -> tauri::Result<Menu<tauri::Wry>> {
             &MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?,
             &MenuItem::with_id(app, "quit", "Quit Gloss", true, None::<&str>)?,
         ],
-    )
+    )?;
+    if let Some(version) = update::pending_version(app) {
+        menu.prepend_items(&[
+            &MenuItem::with_id(app, "update", format!("Restart to update to {version}"), true, None::<&str>)?,
+            &PredefinedMenuItem::separator(app)?,
+        ])?;
+    }
+    Ok(menu)
 }
 
 /// A language typed in Settings that is not in the list still shows, checked, at the top.
