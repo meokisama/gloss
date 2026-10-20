@@ -1,4 +1,5 @@
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ChevronDown } from "lucide-react";
+
 import type { StylePreset } from "@/shared/settings";
 
 interface StylePickerProps {
@@ -7,23 +8,23 @@ interface StylePickerProps {
   onStyle: (style: string) => void;
 }
 
-/** A chip row instead of a dropdown: the popup window is only as tall as its content, so a menu would be clipped. */
+/** A native select: the OS draws its list outside the window, while a Radix menu would be clipped by the content-sized popup. */
 export function StylePicker({ styles, style, onStyle }: StylePickerProps) {
   return (
-    <ToggleGroup
-      type="single"
-      aria-label="Style"
-      value={style}
-      onValueChange={(v) => v && onStyle(v)}
-      onWheel={(e) => (e.currentTarget.scrollLeft += e.deltaY)}
-      data-tauri-drag-region
-      className="min-w-0 overflow-x-auto scrollbar-none"
-    >
-      {styles.map((s) => (
-        <ToggleGroupItem key={s.id} value={s.id} className="px-2">
-          {s.label}
-        </ToggleGroupItem>
-      ))}
-    </ToggleGroup>
+    <div className="relative shrink-0">
+      <select
+        aria-label="Style"
+        value={style}
+        onChange={(e) => onStyle(e.target.value)}
+        className="focus-ring h-7 cursor-pointer appearance-none rounded-md bg-hover pr-7 pl-2.5 text-xs font-medium text-ink"
+      >
+        {styles.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute top-1/2 right-2 size-3.5 -translate-y-1/2 text-muted" />
+    </div>
   );
 }

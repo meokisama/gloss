@@ -7,10 +7,10 @@ import { Row } from "@/settings/components/row";
 import { useSettings } from "@/settings/settings-context";
 
 /** Free text, since any language the model knows works; the menu only offers common ones. */
-export function LanguageField({ name, label, hint }: { name: "targetLang" | "fallbackLang" | "writeLang"; label: string; hint?: string }) {
+export function LanguageField({ name, label, hint }: { name: "targetLang" | "writeLang"; label: string; hint?: string }) {
   const { settings, languages, update } = useSettings();
   return (
-    <Row label={label} hint={hint} htmlFor={name} width="wide">
+    <Row label={label} hint={hint} htmlFor={name} width="medium">
       <InputGroup>
         <Input id={name} value={settings[name]} onChange={(e) => update({ [name]: e.target.value })} />
         <InputGroupAddon>

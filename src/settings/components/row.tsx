@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-const WIDTHS = { auto: "", narrow: "w-28", wide: "w-60" };
+const WIDTHS = { auto: "", narrow: "w-28", medium: "w-44", wide: "w-60" };
 
 interface RowProps {
   label: string;

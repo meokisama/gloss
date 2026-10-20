@@ -50,9 +50,7 @@ pub async fn translate(
     write_lang: Option<String>,
 ) -> Result<String, String> {
     let mut s = settings.unwrap_or_else(|| settings::current(&app));
-    // Writing goes one way: text already in that language stays in it rather than switching to the fallback.
     if let Some(lang) = write_lang {
-        s.fallback_lang = lang.clone();
         s.target_lang = lang;
     }
     translate::translate(&s, &text, &style).await

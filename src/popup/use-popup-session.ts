@@ -24,7 +24,7 @@ export function usePopupSession() {
     const unlisten = listen<Session>("popup:source", async ({ payload }) => {
       const fresh = await api.getSettings();
       setSettings(fresh);
-      setRequest({ ...payload, style: fresh.style });
+      setRequest({ ...payload, style: payload.writeLang ? fresh.writeStyle : fresh.style });
       setSessionId((id) => id + 1);
     });
     return () => void unlisten.then((stop) => stop());

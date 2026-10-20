@@ -12,12 +12,11 @@ with the AI provider of your choice, cloud or local.
 - **Works everywhere**: browsers, PDF readers, chat apps, editors. Select, press `Alt+O`, done.
 - **Translate your writing**: select what you typed and press `Alt+P`. Gloss translates it into your chosen language and
   replaces your text, after a preview or straight away.
-- **Quick language switch**: pick either language from the tray menu.
+- **Quick switch**: pick the language and style for each shortcut from the tray menu.
 - **Any AI provider**: OpenAI, Anthropic, Google Gemini, and any OpenAI-compatible API such as OpenRouter, Groq, DeepSeek,
   Ollama or LM Studio.
-- **Smart direction**: text already in your target language is translated into a fallback language instead.
-- **Your style**: keeps the original tone by default; switch to formal, casual, literal, concise or learner notes, add custom
-  instructions, or write your own system prompt.
+- **Your style**: keeps the original tone by default; switch to formal, casual, chatting or learner notes, add custom instructions, or
+  write your own system prompt.
 - **Flexible popup**: open at the cursor, above it, centered, top right or where you last left it. Adjustable size, font and
   light or dark theme.
 - **Stays out of the way**: lives in the tray, closes when you click elsewhere, can copy the result automatically and launch

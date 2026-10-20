@@ -14,12 +14,17 @@ pub const STYLES: &[StylePreset] = &[
     StylePreset {
         id: "original",
         label: "Match original",
-        instruction: "natural and fluent, keeping the tone, formality and feeling of the original. Do not make it more polite, casual or polished.",
+        instruction: "keep the tone and formality of the original; do not make it more polite or more casual.",
     },
     StylePreset { id: "formal", label: "Formal", instruction: "formal and polite, suitable for business or official writing." },
     StylePreset { id: "casual", label: "Casual", instruction: "casual and conversational, like talking to a friend." },
-    StylePreset { id: "literal", label: "Literal", instruction: "literal and faithful to the original wording and structure." },
-    StylePreset { id: "concise", label: "Concise", instruction: "short and concise, keeping only the essential meaning." },
+    StylePreset {
+        id: "chatting",
+        label: "Chatting",
+        instruction: "fast chat between friends: all lowercase, no apostrophes (its, dont, im), little or no punctuation, as short \
+                      as possible. Use the abbreviations native speakers of the target language type in chat wherever one fits \
+                      (in English: afaik, tbh, idk, imo, btw, ngl, u, ur, rn, pls, thx).",
+    },
     StylePreset {
         id: "learner",
         label: "Learner",
@@ -38,6 +43,5 @@ pub fn system_prompt(s: &Settings, style: &str) -> String {
     };
     s.system_prompt
         .replace("{target}", &s.target_lang)
-        .replace("{fallback}", &s.fallback_lang)
         .replace("{style}", &style_text)
 }

@@ -63,10 +63,10 @@ export function NumberField({ name, label, hint, min, max, unit }: FieldProps<nu
   );
 }
 
-export function SelectField({ name, label, hint, options }: FieldProps<string> & { options: Options }) {
+export function SelectField({ name, label, hint, options, width = "wide" }: FieldProps<string> & { options: Options; width?: "medium" | "wide" }) {
   const { settings, update } = useSettings();
   return (
-    <Row label={label} hint={hint} htmlFor={name} width="wide">
+    <Row label={label} hint={hint} htmlFor={name} width={width}>
       <OptionsSelect id={name} value={settings[name] as string} onChange={(value) => update({ [name]: value })} options={options} />
     </Row>
   );

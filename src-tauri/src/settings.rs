@@ -8,11 +8,17 @@ use tauri_plugin_store::StoreExt;
 const STORE_FILE: &str = "settings.json";
 const STORE_KEY: &str = "settings";
 
-pub const DEFAULT_SYSTEM_PROMPT: &str = "You are a translation engine. Translate the user's text into {target}. \
-If the text is already in {target}, translate it into {fallback} instead.\n\
+/// Picked by running variants against tricky Vietnamese particles; the explicit "You can" example is what stopped
+/// statements turning into requests.
+pub const DEFAULT_SYSTEM_PROMPT: &str = "You are an expert translator. Translate the user's text into {target}.\n\
+Convey the intended meaning and tone the way a native speaker would say it, not word by word. Translate particles, \
+fillers and slang by their function in context; drop them only if they add nothing in the target language.\n\
+Keep the speech act. Describing what someone can do, suggesting an option, asking about ability and asking for an action \
+are different: \"You can do this\" must not become \"Can you do this?\". Make it a question only if the original is one.\n\
 Style: {style}\n\
-Output only the translation: no quotes, no preamble. Keep line breaks, code, URLs and proper names unchanged, \
-and keep established technical terms in their original form where translators normally do.";
+Keep line breaks, code, URLs, proper names and established technical terms unchanged. Do not add content that is not in \
+the source.\n\
+Output only the translation, with no quotes, labels, alternatives or preamble, unless the style asks for notes.";
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -62,12 +68,12 @@ pub struct Settings {
     pub timeout_secs: u64,
 
     pub target_lang: String,
-    pub fallback_lang: String,
     pub style: String,
     pub custom_instructions: String,
     pub system_prompt: String,
     pub max_chars: usize,
     pub write_lang: String,
+    pub write_style: String,
     pub write_mode: WriteMode,
 
     pub popup_position: PopupPosition,
@@ -91,16 +97,16 @@ impl Default for Settings {
             api_format: ApiFormat::Openai,
             base_url: "https://api.openai.com/v1".into(),
             api_keys: BTreeMap::new(),
-            model: "gpt-5-mini".into(),
+            model: "gpt-6-luna".into(),
             effort: "low".into(),
             timeout_secs: 60,
             target_lang: "Vietnamese".into(),
-            fallback_lang: "English".into(),
             style: "original".into(),
             custom_instructions: String::new(),
             system_prompt: DEFAULT_SYSTEM_PROMPT.into(),
             max_chars: 5000,
             write_lang: "English".into(),
+            write_style: "original".into(),
             write_mode: WriteMode::Preview,
             popup_position: PopupPosition::Cursor,
             popup_offset: 14,

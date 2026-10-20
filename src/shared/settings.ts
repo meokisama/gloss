@@ -11,12 +11,12 @@ export interface Settings {
   effort: string;
   timeoutSecs: number;
   targetLang: string;
-  fallbackLang: string;
   style: string;
   customInstructions: string;
   systemPrompt: string;
   maxChars: number;
   writeLang: string;
+  writeStyle: string;
   writeMode: "preview" | "replace";
   popupPosition: "cursor" | "aboveCursor" | "center" | "topRight" | "remember";
   popupOffset: number;
