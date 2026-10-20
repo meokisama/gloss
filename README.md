@@ -84,8 +84,9 @@ Built with [Tauri 2](https://tauri.app), React 19, Tailwind CSS 4 and Rust.
 ## Releasing
 
 Run `npm run release:patch` (or `release:minor`, `release:major`) on a clean tree. It bumps `package.json`, which is the app
-version, commits, tags and pushes. GitHub Actions builds Windows, publishes the release and its `latest.json`. Running apps check it every
-6 hours, download the update in the background and offer "Restart to update" in the tray menu.
+version, commits, tags and pushes. GitHub Actions builds Windows, publishes the release and its `latest.json`. Apps install an update
+quietly at launch. While running they check every 6 hours, download in the background and install on "Quit Gloss", or at once
+from "Restart to update" in the tray menu.
 
 Updates are signed. `plugins.updater.pubkey` in `tauri.conf.json` holds the public key; the repo secrets
 `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` hold the private key. Losing it means installed apps can

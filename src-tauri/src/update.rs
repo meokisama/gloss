@@ -1,4 +1,4 @@
-//! Auto update from GitHub Releases: download in the background, then offer a restart from the tray.
+//! Auto update from GitHub Releases: install quietly at launch, or download in the background and install on quit.
 
 use std::sync::Mutex;
 use std::time::Duration;
@@ -11,18 +11,19 @@ use crate::{settings, tray};
 /// A tray app can run for weeks, so checking only at launch is not enough.
 const CHECK_EVERY: Duration = Duration::from_secs(6 * 60 * 60);
 
-/// An update downloaded and waiting for the user to restart.
+/// An update downloaded and waiting for the user to restart or quit.
 #[derive(Default)]
 pub struct Pending(Mutex<Option<(Update, Vec<u8>)>>);
 
 pub fn start(app: &AppHandle) {
     let app = app.clone();
     std::thread::spawn(move || {
+        check(&app);
+        // Nothing is in progress right after launch, so an update found then installs without asking.
+        install(&app, true);
         while pending_version(&app).is_none() {
-            if let Err(e) = tauri::async_runtime::block_on(download(&app)) {
-                eprintln!("Update check failed: {e}");
-            }
             std::thread::sleep(CHECK_EVERY);
+            check(&app);
         }
     });
 }
@@ -31,11 +32,19 @@ pub fn pending_version(app: &AppHandle) -> Option<String> {
     app.state::<Pending>().0.lock().unwrap().as_ref().map(|(update, _)| update.version.clone())
 }
 
-pub fn install(app: &AppHandle) {
+/// Installs the downloaded update, if any. On Windows this exits the app to run the installer.
+pub fn install(app: &AppHandle, restart: bool) {
     let Some((update, bytes)) = app.state::<Pending>().0.lock().unwrap().take() else { return };
-    match update.install(bytes) {
-        Ok(()) => app.restart(),
+    match update.restart_after_install(restart).install(bytes) {
+        Ok(()) if restart => app.restart(),
+        Ok(()) => {}
         Err(e) => eprintln!("Update install failed: {e}"),
+    }
+}
+
+fn check(app: &AppHandle) {
+    if let Err(e) = tauri::async_runtime::block_on(download(app)) {
+        eprintln!("Update check failed: {e}");
     }
 }
 

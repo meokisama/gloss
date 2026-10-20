@@ -20,8 +20,11 @@ pub fn create(app: &App) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {
             "settings" => show_settings(app),
-            "update" => update::install(app),
-            "quit" => app.exit(0),
+            "update" => update::install(app, true),
+            "quit" => {
+                update::install(app, false);
+                app.exit(0);
+            }
             id => {
                 if let Some((field, value)) = id.split_once(':').filter(|(field, _)| FIELDS.contains(field)) {
                     set_field(app, field, value);

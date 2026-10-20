@@ -49,12 +49,12 @@
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDFENUY4MTE5NDJFMjAyNkUKUldSdUF1SkNHWUZmSGZ2S2VpaHZmQmkxaytyMzNzdzNmOEdsSGp0SXFjRGI1NGZmK2dpK2YzLzAK",
       "endpoints": ["https://github.com/meokisama/gloss/releases/latest/download/latest.json"],
-      "windows": { "installMode": "passive" }
+      "windows": { "installMode": "quiet" }
     }
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis"],
     "publisher": "Meoki",
     "copyright": "Copyright (c) 2026 Meoki",
     "category": "Productivity",
