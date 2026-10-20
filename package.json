@@ -1,7 +1,7 @@
 {
   "name": "gloss",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Translate selected text from any app",
   "author": "Meoki",
   "type": "module",
