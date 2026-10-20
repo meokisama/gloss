@@ -17,29 +17,29 @@ function toAccelerator(e: KeyboardEvent): string | null {
   return [...parts, e.code].join("+");
 }
 
-export function HotkeyInput() {
+export function HotkeyInput({ name, label, hint }: { name: "hotkey" | "writeHotkey"; label: string; hint: string }) {
   const { settings, update } = useSettings();
   const [recording, setRecording] = useState(false);
 
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "Tab") return;
     e.preventDefault();
-    const accelerator = e.key === "Escape" ? settings.hotkey : toAccelerator(e);
+    const accelerator = e.key === "Escape" ? settings[name] : toAccelerator(e);
     if (!accelerator) return;
-    update({ hotkey: accelerator });
+    update({ [name]: accelerator });
     e.currentTarget.blur();
   };
 
   return (
-    <Row label="Translate selection" hint="Click, then press a combination with a modifier, or an F key." htmlFor="hotkey">
+    <Row label={label} hint={hint} htmlFor={name}>
       <Button
-        id="hotkey"
+        id={name}
         className={cn("min-w-36 font-normal", recording && "border-accent")}
         onFocus={() => setRecording(true)}
         onBlur={() => setRecording(false)}
         onKeyDown={onKeyDown}
       >
-        {recording ? <span className="text-muted">Press keys…</span> : <Hotkey accelerator={settings.hotkey} />}
+        {recording ? <span className="text-muted">Press keys…</span> : <Hotkey accelerator={settings[name]} />}
       </Button>
     </Row>
   );

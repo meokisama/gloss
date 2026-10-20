@@ -1,5 +1,6 @@
 use std::sync::Mutex;
 
+use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, PhysicalSize, WebviewWindow};
 
 use crate::settings::{self, PopupPosition, Settings};
@@ -13,14 +14,28 @@ const EDGE_MARGIN: f64 = 16.0;
 #[derive(Default)]
 pub struct Anchor(pub Mutex<PhysicalPosition<f64>>);
 
-pub fn show(app: &AppHandle, text: String) {
+/// What one hotkey press hands the popup.
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Session {
+    pub text: String,
+    /// Set for the writing hotkey: translate the user's own text into this language, then offer to paste it back.
+    pub write_lang: Option<String>,
+}
+
+pub fn show(app: &AppHandle, session: Session) {
     let Some(win) = app.get_webview_window(LABEL) else { return };
     let cursor = app.cursor_position().unwrap_or_default();
     *app.state::<Anchor>().0.lock().unwrap() = cursor;
     place(app, &win, &settings::current(app), INITIAL_HEIGHT, false);
     let _ = win.show();
     let _ = win.set_focus();
-    let _ = app.emit_to(LABEL, "popup:source", text);
+    let _ = app.emit_to(LABEL, "popup:source", session);
+}
+
+/// True while the user is still looking at the popup, so a paste lands where they expect.
+pub fn is_focused(app: &AppHandle) -> bool {
+    app.get_webview_window(LABEL).is_some_and(|win| win.is_focused().unwrap_or(false))
 }
 
 pub fn resize(app: &AppHandle, height: f64, keep_position: bool) {

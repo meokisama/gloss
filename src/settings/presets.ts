@@ -12,19 +12,3 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
   { name: "Ollama (local)", apiFormat: "openai", baseUrl: "http://localhost:11434/v1", model: "qwen2.5:7b" },
   { name: "LM Studio (local)", apiFormat: "openai", baseUrl: "http://localhost:1234/v1", model: "local-model" },
 ];
-
-export const LANGUAGES = [
-  "Vietnamese",
-  "English",
-  "Japanese",
-  "Chinese (Simplified)",
-  "Chinese (Traditional)",
-  "Korean",
-  "French",
-  "German",
-  "Spanish",
-  "Portuguese",
-  "Russian",
-  "Thai",
-  "Indonesian",
-];

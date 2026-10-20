@@ -4,8 +4,13 @@ import { useEffect, useState } from "react";
 import { api } from "@/shared/api";
 import type { Settings } from "@/shared/settings";
 
-export interface Request {
+/** Mirrors `popup::Session` in src-tauri/src/popup.rs. */
+interface Session {
   text: string;
+  writeLang: string | null;
+}
+
+export interface Request extends Session {
   style: string;
 }
 
@@ -16,10 +21,10 @@ export function usePopupSession() {
   const [sessionId, setSessionId] = useState(0);
 
   useEffect(() => {
-    const unlisten = listen<string>("popup:source", async ({ payload }) => {
+    const unlisten = listen<Session>("popup:source", async ({ payload }) => {
       const fresh = await api.getSettings();
       setSettings(fresh);
-      setRequest({ text: payload, style: fresh.style });
+      setRequest({ ...payload, style: fresh.style });
       setSessionId((id) => id + 1);
     });
     return () => void unlisten.then((stop) => stop());

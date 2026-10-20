@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { NumberField, SelectField, TextAreaField } from "@/settings/components/fields";
+import { NumberField, SegmentedField, SelectField, TextAreaField } from "@/settings/components/fields";
 import { Group } from "@/settings/components/group";
 import { LanguageField } from "@/settings/components/language-field";
 import { Page } from "@/settings/components/page";
@@ -16,6 +16,18 @@ export function TranslationSection() {
       <Group title="Languages">
         <LanguageField name="targetLang" label="Translate into" />
         <LanguageField name="fallbackLang" label="Fallback" hint="Used when the text is already in the target language." />
+      </Group>
+      <Group title="Your writing">
+        <LanguageField name="writeLang" label="Translate into" hint="For text you typed, with the writing shortcut." />
+        <SegmentedField
+          name="writeMode"
+          label="After translating"
+          hint="Preview waits for Enter before replacing what you typed."
+          options={[
+            ["preview", "Preview"],
+            ["replace", "Replace"],
+          ]}
+        />
       </Group>
       <Group title="Output">
         <SelectField name="style" label="Default style" options={styles.map((s) => [s.id, s.label])} />

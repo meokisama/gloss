@@ -4,12 +4,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group";
 import { Row } from "@/settings/components/row";
-import { LANGUAGES } from "@/settings/presets";
 import { useSettings } from "@/settings/settings-context";
 
 /** Free text, since any language the model knows works; the menu only offers common ones. */
-export function LanguageField({ name, label, hint }: { name: "targetLang" | "fallbackLang"; label: string; hint?: string }) {
-  const { settings, update } = useSettings();
+export function LanguageField({ name, label, hint }: { name: "targetLang" | "fallbackLang" | "writeLang"; label: string; hint?: string }) {
+  const { settings, languages, update } = useSettings();
   return (
     <Row label={label} hint={hint} htmlFor={name} width="wide">
       <InputGroup>
@@ -23,7 +22,7 @@ export function LanguageField({ name, label, hint }: { name: "targetLang" | "fal
               <ChevronDown className="size-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {LANGUAGES.map((lang) => (
+              {languages.map((lang) => (
                 <DropdownMenuItem key={lang} onSelect={() => update({ [name]: lang })}>
                   {lang}
                 </DropdownMenuItem>

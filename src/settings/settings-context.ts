@@ -5,6 +5,7 @@ import type { Settings, StylePreset } from "@/shared/settings";
 interface SettingsContextValue {
   settings: Settings;
   styles: StylePreset[];
+  languages: string[];
   update: (patch: Partial<Settings>) => void;
 }
 

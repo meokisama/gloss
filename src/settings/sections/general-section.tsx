@@ -6,8 +6,9 @@ import { Page } from "@/settings/components/page";
 export function GeneralSection() {
   return (
     <Page title="General" description="How you call Gloss and how it looks.">
-      <Group title="Shortcut">
-        <HotkeyInput />
+      <Group title="Shortcuts">
+        <HotkeyInput name="hotkey" label="Translate selection" hint="Into your language. Click, then press a combination with a modifier." />
+        <HotkeyInput name="writeHotkey" label="Translate your writing" hint="Select what you typed; the translation can replace it." />
       </Group>
       <Group title="App">
         <SwitchField name="launchAtLogin" label="Launch at login" />

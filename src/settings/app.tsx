@@ -21,7 +21,7 @@ const PAGES = [
 ];
 
 export function App() {
-  const { settings, styles, status, update, save, test } = useSettingsForm();
+  const { settings, styles, languages, status, update, save, test } = useSettingsForm();
   useTheme(settings?.theme);
 
   const onSubmit = (e: FormEvent) => {
@@ -33,12 +33,12 @@ export function App() {
     <div className="flex h-screen flex-col">
       <TitleBar />
       {settings && (
-        <SettingsContext.Provider value={{ settings, styles, update }}>
+        <SettingsContext.Provider value={{ settings, styles, languages, update }}>
           <Tabs.Root defaultValue="general" orientation="vertical" asChild>
             <form className="flex min-h-0 flex-1" onSubmit={onSubmit}>
               <Nav pages={PAGES} />
               <main className="flex min-w-0 flex-1 flex-col rounded-tl-xl border-l border-t border-line bg-surface">
-                <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+                <div className="flex-1 overflow-y-auto scrollbar-gutter-stable">
                   {PAGES.map(({ id, Content }) => (
                     <Tabs.Content key={id} value={id} className="outline-none">
                       <Content />

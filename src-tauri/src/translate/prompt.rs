@@ -11,20 +11,19 @@ pub struct StylePreset {
 }
 
 pub const STYLES: &[StylePreset] = &[
-    StylePreset { id: "natural", label: "Natural", instruction: "natural and fluent, the way a native speaker would say it." },
+    StylePreset {
+        id: "original",
+        label: "Match original",
+        instruction: "natural and fluent, keeping the tone, formality and feeling of the original. Do not make it more polite, casual or polished.",
+    },
     StylePreset { id: "formal", label: "Formal", instruction: "formal and polite, suitable for business or official writing." },
     StylePreset { id: "casual", label: "Casual", instruction: "casual and conversational, like talking to a friend." },
     StylePreset { id: "literal", label: "Literal", instruction: "literal and faithful to the original wording and structure." },
     StylePreset { id: "concise", label: "Concise", instruction: "short and concise, keeping only the essential meaning." },
     StylePreset {
-        id: "technical",
-        label: "Technical",
-        instruction: "precise technical register; keep established English terms where translators normally do.",
-    },
-    StylePreset {
         id: "learner",
         label: "Learner",
-        instruction: "natural. After the translation, add a blank line and up to three short notes on idioms, \
+        instruction: "matching the tone of the original. After the translation, add a blank line and up to three short notes on idioms, \
                       tricky words or grammar from the original.",
     },
 ];

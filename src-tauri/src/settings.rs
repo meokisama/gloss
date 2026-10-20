@@ -11,7 +11,8 @@ const STORE_KEY: &str = "settings";
 pub const DEFAULT_SYSTEM_PROMPT: &str = "You are a translation engine. Translate the user's text into {target}. \
 If the text is already in {target}, translate it into {fallback} instead.\n\
 Style: {style}\n\
-Output only the translation: no quotes, no preamble. Keep line breaks, code, URLs and proper names unchanged.";
+Output only the translation: no quotes, no preamble. Keep line breaks, code, URLs and proper names unchanged, \
+and keep established technical terms in their original form where translators normally do.";
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -33,10 +34,20 @@ pub enum PopupPosition {
     Remember,
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum WriteMode {
+    #[default]
+    Preview,
+    Replace,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Settings {
     pub hotkey: String,
+    /// Translates the user's own text into `write_lang`.
+    pub write_hotkey: String,
     pub launch_at_login: bool,
 
     /// Not the provider: OpenAI, OpenRouter, Groq and the rest all speak `Openai`. The base URL tells providers apart.
@@ -56,6 +67,8 @@ pub struct Settings {
     pub custom_instructions: String,
     pub system_prompt: String,
     pub max_chars: usize,
+    pub write_lang: String,
+    pub write_mode: WriteMode,
 
     pub popup_position: PopupPosition,
     pub popup_offset: u32,
@@ -72,7 +85,8 @@ pub struct Settings {
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            hotkey: "Alt+Q".into(),
+            hotkey: "Alt+O".into(),
+            write_hotkey: "Alt+P".into(),
             launch_at_login: false,
             api_format: ApiFormat::Openai,
             base_url: "https://api.openai.com/v1".into(),
@@ -82,10 +96,12 @@ impl Default for Settings {
             timeout_secs: 60,
             target_lang: "Vietnamese".into(),
             fallback_lang: "English".into(),
-            style: "natural".into(),
+            style: "original".into(),
             custom_instructions: String::new(),
             system_prompt: DEFAULT_SYSTEM_PROMPT.into(),
             max_chars: 5000,
+            write_lang: "English".into(),
+            write_mode: WriteMode::Preview,
             popup_position: PopupPosition::Cursor,
             popup_offset: 14,
             popup_width: 420,

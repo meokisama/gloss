@@ -1,5 +1,6 @@
-//! Everything that differs per OS. Each backend exposes the same functions:
-//! `init(app)` once at startup and `send_copy()` to make the foreground app copy its selection.
+//! Everything that differs per OS. Each backend exposes the same items: `init(app)` once at startup,
+//! `send_copy()` and `send_paste()` for the foreground app, and `foreground()` returning a `Focus`
+//! that `restore_focus(app, &focus)` switches back to.
 
 #[cfg(target_os = "windows")]
 mod windows;

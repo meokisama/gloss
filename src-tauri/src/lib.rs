@@ -1,11 +1,13 @@
 mod commands;
 mod hotkey;
+mod languages;
 mod platform;
 mod popup;
 mod selection;
 mod settings;
 mod translate;
 mod tray;
+mod write;
 
 use std::sync::Mutex;
 
@@ -20,20 +22,23 @@ pub fn run() {
         .plugin(tauri_plugin_autostart::Builder::new().build())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .manage(popup::Anchor::default())
+        .manage(write::WriteFocus::default())
         .invoke_handler(tauri::generate_handler![
             commands::get_settings,
             commands::default_settings,
             commands::style_presets,
+            commands::languages,
             commands::save_settings,
             commands::translate,
             commands::list_models,
+            commands::replace_selection,
             commands::resize_popup,
             commands::hide_popup,
         ])
         .setup(|app| {
             platform::init(app);
             let loaded = settings::load(app.handle());
-            if let Err(e) = hotkey::register(app.handle(), &loaded.hotkey) {
+            if let Err(e) = hotkey::register(app.handle(), &loaded) {
                 eprintln!("{e}");
             }
             let first_run = loaded.api_key().is_empty();

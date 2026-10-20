@@ -14,7 +14,7 @@ function WindowButton({ label, icon: Icon, onClick, danger }: { label: string; i
       title={label}
       onClick={onClick}
       className={cn(
-        "grid h-9 w-11 place-items-center text-muted transition-colors",
+        "grid h-9 w-11 cursor-default place-items-center text-muted transition-colors",
         danger ? "hover:bg-[#c42b1c] hover:text-white" : "hover:bg-hover hover:text-ink",
       )}
     >

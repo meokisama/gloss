@@ -1,11 +1,13 @@
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
+import { ReplaceBar } from "@/popup/components/replace-bar";
 import { ResultView } from "@/popup/components/result-view";
 import { Toolbar } from "@/popup/components/toolbar";
 import { useAutoResize } from "@/popup/use-auto-resize";
 import { useDismiss } from "@/popup/use-dismiss";
 import { usePopupSession } from "@/popup/use-popup-session";
+import { useReplace } from "@/popup/use-replace";
 import { useTranslation } from "@/popup/use-translation";
 import { api } from "@/shared/api";
 import type { StylePreset } from "@/shared/settings";
@@ -14,6 +16,7 @@ import { useTheme } from "@/shared/use-theme";
 export function App() {
   const { settings, request, sessionId, setStyle, retry } = usePopupSession();
   const result = useTranslation(request);
+  const { replace, error: replaceError } = useReplace(request, result, settings?.writeMode);
   const [styles, setStyles] = useState<StylePreset[]>([]);
   const [pinned, setPinned] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -56,7 +59,8 @@ export function App() {
                 {request.text}
               </p>
             )}
-            <ResultView result={result} hotkey={settings.hotkey} />
+            <ResultView result={result} hotkey={request.writeLang ? settings.writeHotkey : settings.hotkey} />
+            {request.writeLang && <ReplaceBar lang={request.writeLang} onReplace={replace} error={replaceError} />}
           </div>
         </>
       )}
