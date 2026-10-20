@@ -10,18 +10,17 @@ use serde_json::Value;
 
 use crate::settings::{ApiFormat, Settings};
 
-pub use prompt::{STYLES, StylePreset};
+pub use prompt::{STYLES, StylePreset, explain_prompt, system_prompt};
 
-pub async fn translate(s: &Settings, text: &str, style: &str) -> Result<String, String> {
+pub async fn complete(s: &Settings, system: &str, text: &str) -> Result<String, String> {
     if text.chars().count() > s.max_chars {
         return Err(format!("Selection is longer than {} characters (see Settings).", s.max_chars));
     }
-    let system = prompt::system_prompt(s, style);
     let client = client(s)?;
     let request = match s.api_format {
-        ApiFormat::Openai => openai::request(&client, s, &system, text),
-        ApiFormat::Anthropic => anthropic::request(&client, s, &system, text),
-        ApiFormat::Gemini => gemini::request(&client, s, &system, text),
+        ApiFormat::Openai => openai::request(&client, s, system, text),
+        ApiFormat::Anthropic => anthropic::request(&client, s, system, text),
+        ApiFormat::Gemini => gemini::request(&client, s, system, text),
     };
     let body = send(request).await?;
 

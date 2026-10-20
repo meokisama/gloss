@@ -8,7 +8,8 @@ import type { StylePreset } from "@/shared/settings";
 
 interface ToolbarProps {
   styles: StylePreset[];
-  style: string;
+  /** Null when explaining, which has no style. */
+  style: string | null;
   onStyle: (style: string) => void;
   copyText: string | null;
   onRetry: () => void;
@@ -23,10 +24,16 @@ export function Toolbar({ styles, style, onStyle, copyText, onRetry, pinned, onP
 
   return (
     <header data-tauri-drag-region onMouseDown={onMouseDown} className="flex h-10 shrink-0 items-center gap-0.5 border-b border-line pl-2 pr-1.5">
-      <StylePicker styles={styles} style={style} onStyle={onStyle} />
+      {style === null ? (
+        <span data-tauri-drag-region className="pl-1 text-xs font-medium text-muted">
+          Explain
+        </span>
+      ) : (
+        <StylePicker styles={styles} style={style} onStyle={onStyle} />
+      )}
       <span data-tauri-drag-region className="min-w-3 flex-1 self-stretch" />
       {copyText !== null && <CopyButton text={copyText} />}
-      <Button variant="ghost" size="icon" aria-label="Translate again" title="Translate again" onClick={onRetry}>
+      <Button variant="ghost" size="icon" aria-label="Try again" title="Try again" onClick={onRetry}>
         <RotateCw />
       </Button>
       <span className="mx-1 h-4 w-px shrink-0 bg-line" />

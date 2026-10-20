@@ -54,6 +54,7 @@ pub struct Settings {
     pub hotkey: String,
     /// Translates the user's own text into `write_lang`.
     pub write_hotkey: String,
+    pub explain_hotkey: String,
     pub launch_at_login: bool,
 
     /// Not the provider: OpenAI, OpenRouter, Groq and the rest all speak `Openai`. The base URL tells providers apart.
@@ -93,6 +94,7 @@ impl Default for Settings {
         Self {
             hotkey: "Alt+O".into(),
             write_hotkey: "Alt+P".into(),
+            explain_hotkey: "Alt+I".into(),
             launch_at_login: false,
             api_format: ApiFormat::Openai,
             base_url: "https://api.openai.com/v1".into(),

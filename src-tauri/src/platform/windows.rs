@@ -5,9 +5,6 @@ use enigo::{Direction, Key, Keyboard};
 use tauri::{App, AppHandle};
 use windows_sys::Win32::UI::WindowsAndMessaging::{GetForegroundWindow, SetForegroundWindow};
 
-/// Unassigned virtual key. Tapping it before releasing Alt or Win stops the target app
-/// from opening its menu bar or the Start menu on the lone modifier release.
-const VK_MASK: u32 = 0xE8;
 const FOCUS_TIMEOUT: Duration = Duration::from_millis(500);
 
 /// The window that had focus, as an integer since `HWND` is a raw pointer and not `Send`.
@@ -46,12 +43,12 @@ pub fn restore_focus(_app: &AppHandle, focus: &Focus) -> Result<(), String> {
 fn send_ctrl(key: Key) -> Result<(), String> {
     let mut e = super::enigo()?;
     let mut run = || -> enigo::InputResult<()> {
-        e.key(Key::Other(VK_MASK), Direction::Click)?;
+        // Ctrl first, so Alt or Win is never released alone (menu bar, Start menu).
+        e.key(Key::Control, Direction::Press)?;
         // The hotkey's modifiers are usually still held; Ctrl+Alt+C is not a copy.
-        for modifier in [Key::Alt, Key::Shift, Key::Meta, Key::Control] {
+        for modifier in [Key::Alt, Key::Shift, Key::Meta] {
             e.key(modifier, Direction::Release)?;
         }
-        e.key(Key::Control, Direction::Press)?;
         e.key(key, Direction::Click)?;
         e.key(Key::Control, Direction::Release)
     };

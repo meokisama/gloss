@@ -1,13 +1,13 @@
 import { listen } from "@tauri-apps/api/event";
 import { useEffect, useState } from "react";
 
-import { api } from "@/shared/api";
+import { api, type Mode } from "@/shared/api";
 import type { Settings } from "@/shared/settings";
 
 /** Mirrors `popup::Session` in src-tauri/src/popup.rs. */
 interface Session {
   text: string;
-  writeLang: string | null;
+  mode: Mode;
 }
 
 export interface Request extends Session {
@@ -24,7 +24,7 @@ export function usePopupSession() {
     const unlisten = listen<Session>("popup:source", async ({ payload }) => {
       const fresh = await api.getSettings();
       setSettings(fresh);
-      setRequest({ ...payload, style: payload.writeLang ? fresh.writeStyle : fresh.style });
+      setRequest({ ...payload, style: payload.mode === "write" ? fresh.writeStyle : fresh.style });
       setSessionId((id) => id + 1);
     });
     return () => void unlisten.then((stop) => stop());

@@ -1,14 +1,15 @@
 use tauri::AppHandle;
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 
-use crate::popup::{self, Session};
+use crate::popup::{self, Mode, Session};
 use crate::settings::Settings;
 use crate::{selection, write};
 
 pub fn register(app: &AppHandle, s: &Settings) -> Result<(), String> {
     app.global_shortcut().unregister_all().map_err(|e| e.to_string())?;
     on(app, &s.hotkey, translate)?;
-    on(app, &s.write_hotkey, write::start)
+    on(app, &s.write_hotkey, write::start)?;
+    on(app, &s.explain_hotkey, explain)
 }
 
 fn on(app: &AppHandle, hotkey: &str, action: fn(&AppHandle)) -> Result<(), String> {
@@ -25,6 +26,14 @@ fn on(app: &AppHandle, hotkey: &str, action: fn(&AppHandle)) -> Result<(), Strin
 }
 
 fn translate(app: &AppHandle) {
+    show(app, Mode::Translate);
+}
+
+fn explain(app: &AppHandle) {
+    show(app, Mode::Explain);
+}
+
+fn show(app: &AppHandle, mode: Mode) {
     let text = selection::capture(app).unwrap_or_default();
-    popup::show(app, Session { text, write_lang: None });
+    popup::show(app, Session { text, mode });
 }

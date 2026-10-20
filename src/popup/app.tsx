@@ -32,6 +32,7 @@ export function App() {
   useDismiss(pinned || !settings?.closeOnBlur);
   useAutoResize(cardRef, movedRef);
 
+  const hotkeys = settings && { translate: settings.hotkey, write: settings.writeHotkey, explain: settings.explainHotkey };
   const cardStyle = settings && ({ "--font-size": `${settings.fontSize}px`, "--max-height": `${settings.popupMaxHeight}px` } as CSSProperties);
 
   return (
@@ -40,11 +41,11 @@ export function App() {
       style={cardStyle ?? undefined}
       className="flex max-h-(--max-height) flex-col overflow-hidden rounded-xl border border-line-strong bg-surface text-ink"
     >
-      {settings && request && (
+      {settings && hotkeys && request && (
         <>
           <Toolbar
             styles={styles}
-            style={request.style}
+            style={request.mode === "explain" ? null : request.style}
             onStyle={setStyle}
             copyText={result.status === "done" ? result.text : null}
             onRetry={retry}
@@ -59,8 +60,8 @@ export function App() {
                 {request.text}
               </p>
             )}
-            <ResultView result={result} hotkey={request.writeLang ? settings.writeHotkey : settings.hotkey} />
-            {request.writeLang && <ReplaceBar lang={request.writeLang} onReplace={replace} error={replaceError} />}
+            <ResultView result={result} hotkey={hotkeys[request.mode]} markdown={request.mode === "explain"} />
+            {request.mode === "write" && <ReplaceBar lang={settings.writeLang} onReplace={replace} error={replaceError} />}
           </div>
         </>
       )}

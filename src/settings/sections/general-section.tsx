@@ -9,6 +9,7 @@ export function GeneralSection() {
       <Group title="Shortcuts">
         <HotkeyInput name="hotkey" label="Translate selection" hint="Into your language. Click, then press a combination with a modifier." />
         <HotkeyInput name="writeHotkey" label="Translate your writing" hint="Select what you typed; the translation can replace it." />
+        <HotkeyInput name="explainHotkey" label="Explain selection" hint="What a term or concept is and how it works, in your language." />
       </Group>
       <Group title="App">
         <SwitchField name="launchAtLogin" label="Launch at login" />

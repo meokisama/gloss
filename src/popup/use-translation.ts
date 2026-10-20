@@ -13,7 +13,7 @@ export function useTranslation(request: Request | null): TranslationResult {
     if (!request?.text) return setResult({ status: "idle" });
     let stale = false;
     setResult({ status: "loading" });
-    api.translate(request.text, request.style, undefined, request.writeLang ?? undefined).then(
+    api.translate(request.text, request.style, request.mode).then(
       (text) => !stale && setResult({ status: "done", text }),
       (e) => !stale && setResult({ status: "error", text: errorText(e) }),
     );

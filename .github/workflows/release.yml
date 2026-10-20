@@ -10,17 +10,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            args: ""
-          - os: macos-latest
-            args: --target aarch64-apple-darwin
-          - os: macos-latest
-            args: --target x86_64-apple-darwin
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v5
@@ -36,8 +26,6 @@ jobs:
           cache: npm
 
       - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - uses: swatinem/rust-cache@v2
         with:
@@ -52,7 +40,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: Gloss ${{ github.ref_name }}
+          releaseName: ${{ github.ref_name }}
           releaseDraft: false
           # Set here, not in tauri.conf.json, so local `tauri build` works without the signing key.
-          args: ${{ matrix.args }} --config '{"bundle":{"createUpdaterArtifacts":true}}'
+          args: --config '{"bundle":{"createUpdaterArtifacts":true}}'

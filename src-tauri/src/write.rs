@@ -5,8 +5,8 @@ use std::sync::Mutex;
 use tauri::{AppHandle, Manager};
 
 use crate::platform::{self, Focus};
-use crate::popup::{self, Session};
-use crate::{selection, settings};
+use crate::popup::{self, Mode, Session};
+use crate::selection;
 
 /// Window the writing hotkey was pressed in, where the translation is pasted.
 #[derive(Default)]
@@ -16,7 +16,7 @@ pub struct WriteFocus(Mutex<Option<Focus>>);
 pub fn start(app: &AppHandle) {
     *app.state::<WriteFocus>().0.lock().unwrap() = Some(platform::foreground());
     let text = selection::capture(app).unwrap_or_default();
-    popup::show(app, Session { text, write_lang: Some(settings::current(app).write_lang) });
+    popup::show(app, Session { text, mode: Mode::Write });
 }
 
 /// Blocking: call it off the main thread.

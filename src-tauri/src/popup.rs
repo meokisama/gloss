@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, PhysicalSize, WebviewWindow};
 
 use crate::settings::{self, PopupPosition, Settings};
@@ -14,13 +14,21 @@ const EDGE_MARGIN: f64 = 16.0;
 #[derive(Default)]
 pub struct Anchor(pub Mutex<PhysicalPosition<f64>>);
 
+/// Which hotkey opened the popup.
+#[derive(Clone, Copy, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum Mode {
+    Translate,
+    /// Translate the user's own text into `write_lang`, then offer to paste it back.
+    Write,
+    Explain,
+}
+
 /// What one hotkey press hands the popup.
 #[derive(Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
 pub struct Session {
     pub text: String,
-    /// Set for the writing hotkey: translate the user's own text into this language, then offer to paste it back.
-    pub write_lang: Option<String>,
+    pub mode: Mode,
 }
 
 pub fn show(app: &AppHandle, session: Session) {

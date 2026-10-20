@@ -2,6 +2,7 @@
 export interface Settings {
   hotkey: string;
   writeHotkey: string;
+  explainHotkey: string;
   launchAtLogin: boolean;
   apiFormat: "openai" | "anthropic" | "gemini";
   baseUrl: string;

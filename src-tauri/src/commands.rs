@@ -3,7 +3,8 @@ use tauri_plugin_autostart::ManagerExt;
 
 use crate::languages::LANGUAGES;
 use crate::settings::{self, Settings};
-use crate::{hotkey, popup, translate, tray, write};
+use crate::popup::{self, Mode};
+use crate::{hotkey, translate, tray, write};
 
 #[tauri::command]
 pub fn get_settings(app: AppHandle) -> Settings {
@@ -40,20 +41,16 @@ pub fn save_settings(app: AppHandle, mut new: Settings) -> Result<(), String> {
     Ok(())
 }
 
-/// `settings` lets the Settings window test values that are not saved yet. `write_lang` translates the user's own text.
+/// `settings` lets the Settings window test values that are not saved yet.
 #[tauri::command]
-pub async fn translate(
-    app: AppHandle,
-    text: String,
-    style: String,
-    settings: Option<Settings>,
-    write_lang: Option<String>,
-) -> Result<String, String> {
-    let mut s = settings.unwrap_or_else(|| settings::current(&app));
-    if let Some(lang) = write_lang {
-        s.target_lang = lang;
-    }
-    translate::translate(&s, &text, &style).await
+pub async fn translate(app: AppHandle, text: String, style: String, mode: Mode, settings: Option<Settings>) -> Result<String, String> {
+    let s = settings.unwrap_or_else(|| settings::current(&app));
+    let system = match mode {
+        Mode::Translate => translate::system_prompt(&s, &s.target_lang, &style),
+        Mode::Write => translate::system_prompt(&s, &s.write_lang, &style),
+        Mode::Explain => translate::explain_prompt(&s.target_lang),
+    };
+    translate::complete(&s, &system, &text).await
 }
 
 #[tauri::command]

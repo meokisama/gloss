@@ -8,7 +8,7 @@ import type { Settings } from "@/shared/settings";
 /** Writing sessions only: Enter pastes the translation over the selection; "replace" mode does it as soon as it arrives. */
 export function useReplace(request: Request | null, result: TranslationResult, mode: Settings["writeMode"] | undefined) {
   const [error, setError] = useState<string | null>(null);
-  const text = request?.writeLang && result.status === "done" ? result.text : null;
+  const text = request?.mode === "write" && result.status === "done" ? result.text : null;
 
   const replace = useCallback(() => {
     if (text === null) return;

@@ -17,7 +17,7 @@ function toAccelerator(e: KeyboardEvent): string | null {
   return [...parts, e.code].join("+");
 }
 
-export function HotkeyInput({ name, label, hint }: { name: "hotkey" | "writeHotkey"; label: string; hint: string }) {
+export function HotkeyInput({ name, label, hint }: { name: "hotkey" | "writeHotkey" | "explainHotkey"; label: string; hint: string }) {
   const { settings, update } = useSettings();
   const [recording, setRecording] = useState(false);
 
