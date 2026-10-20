@@ -1,46 +1,81 @@
 <div align="center">
-  <img src="src-tauri/icons/128x128.png" width="96" alt="Gloss">
+  <img src="src-tauri/icons/128x128.png" width="112" alt="Gloss logo">
+
   <h1>Gloss</h1>
-  <p>Select text in any app, press a hotkey, read the translation.</p>
+
+  <p><strong>Select text in any app. Press a hotkey. Read the translation.</strong></p>
+
+  <p>
+    <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-6366f1?style=flat-square">
+    <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS-0ea5e9?style=flat-square">
+    <img alt="Tauri" src="https://img.shields.io/badge/Tauri-2-24c8db?style=flat-square&logo=tauri&logoColor=white">
+    <img alt="React" src="https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black">
+    <img alt="Rust" src="https://img.shields.io/badge/Rust-stable-dea584?style=flat-square&logo=rust&logoColor=black">
+  </p>
+
+  <p>
+    <a href="#features">Features</a> ·
+    <a href="#getting-started">Getting started</a> ·
+    <a href="#providers">Providers</a> ·
+    <a href="#building-from-source">Build</a>
+  </p>
 </div>
 
-Gloss is a small tray app that translates whatever you have selected, right next to your cursor. It works in any application,
-with the AI provider of your choice, cloud or local.
+<br>
+
+Gloss is a tiny tray app that translates whatever you have selected and shows it right next to your cursor. It also works the
+other way: select what you just wrote, and Gloss replaces it with the translation. Bring any AI provider, cloud or local.
+
+## Two shortcuts, both directions
+
+| Shortcut | What it does                                                                                                |
+| :------: | ----------------------------------------------------------------------------------------------------------- |
+| `Alt+O`  | **Read.** Translates the selection into your language and shows it in a popup at the cursor.                |
+| `Alt+P`  | **Write.** Translates your own text into the target language and pastes it back, with or without a preview. |
+
+Both shortcuts are configurable, and each has its own language and style that you can switch from the tray menu.
 
 ## Features
 
-- **Works everywhere**: browsers, PDF readers, chat apps, editors. Select, press `Alt+O`, done.
-- **Translate your writing**: select what you typed and press `Alt+P`. Gloss translates it into your chosen language and
-  replaces your text, after a preview or straight away.
-- **Quick switch**: pick the language and style for each shortcut from the tray menu.
-- **Any AI provider**: OpenAI, Anthropic, Google Gemini, and any OpenAI-compatible API such as OpenRouter, Groq, DeepSeek,
-  Ollama or LM Studio.
-- **Your style**: keeps the original tone by default; switch to formal, casual, chatting or learner notes, add custom instructions, or
-  write your own system prompt.
-- **Flexible popup**: open at the cursor, above it, centered, top right or where you last left it. Adjustable size, font and
-  light or dark theme.
-- **Stays out of the way**: lives in the tray, closes when you click elsewhere, can copy the result automatically and launch
-  at login.
+- **Works everywhere.** Browsers, PDF readers, chat apps, editors: if you can select it, Gloss can translate it.
+- **Keeps your voice.** Matches the original tone by default. Switch to Formal, Casual, Chatting or Learner notes, add custom
+  instructions, or write your own system prompt.
+- **Keeps the intent.** A question stays a question and a request stays a request; Gloss translates, it does not answer.
+- **Your popup, your way.** Open at the cursor, above it, centered, top right, or where you last left it. Adjustable width,
+  height, font size and light or dark theme.
+- **Stays out of the way.** Lives in the tray, closes when you click elsewhere, can copy the result automatically and launch at
+  login.
 
 ## Getting started
 
 1. Install Gloss and launch it. It appears in the system tray.
-2. Left click the tray icon to open Settings, pick a provider and enter your API key.
-3. Select some text anywhere and press `Alt+O`. To translate your own text, select it and press `Alt+P`.
+2. Left click the tray icon to open Settings, pick a provider, enter your API key and choose a model.
+3. Select some text anywhere and press `Alt+O`. To translate your own writing, select it and press `Alt+P`.
 
-On macOS, grant the Accessibility permission when asked, then relaunch.
+## Providers
+
+| Provider              | Examples                                                             |
+| --------------------- | -------------------------------------------------------------------- |
+| OpenAI                | GPT models                                                           |
+| Anthropic             | Claude models, with adjustable thinking effort                       |
+| Google Gemini         | Gemini models                                                        |
+| OpenAI-compatible API | OpenRouter, Groq, DeepSeek, and local models via Ollama or LM Studio |
+
+Models are listed straight from the provider, so new ones show up without an update.
 
 ## Building from source
 
 Requires [Node.js](https://nodejs.org) and [Rust](https://rustup.rs).
 
-```
+```sh
 npm install
 npm run tauri dev      # develop
 npm run tauri build    # installer in src-tauri/target/release/bundle
 ```
 
-## Notes
+Built with [Tauri 2](https://tauri.app), React 19, Tailwind CSS 4 and Rust.
+
+## Known limitations
 
 - The API key is stored in plain text in the app data folder.
 - Tested on Windows. macOS support is written but not yet tested.
