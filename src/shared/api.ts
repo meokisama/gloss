@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { Channel, invoke } from "@tauri-apps/api/core";
 
 import type { Settings, StylePreset } from "@/shared/settings";
 
@@ -11,7 +11,8 @@ export const api = {
   stylePresets: () => invoke<StylePreset[]>("style_presets"),
   saveSettings: (settings: Settings) => invoke<void>("save_settings", { new: settings }),
   languages: () => invoke<string[]>("languages"),
-  translate: (text: string, style: string, mode: Mode, settings?: Settings) => invoke<string>("translate", { text, style, mode, settings }),
+  translate: (text: string, style: string, mode: Mode, { settings, onDelta }: { settings?: Settings; onDelta?: (delta: string) => void } = {}) =>
+    invoke<string>("translate", { text, style, mode, settings, onDelta: new Channel<string>(onDelta) }),
   replaceSelection: (text: string) => invoke<void>("replace_selection", { text }),
   listModels: (settings: Settings) => invoke<string[]>("list_models", { settings }),
   resizePopup: (height: number, keepPosition: boolean) => invoke<void>("resize_popup", { height, keepPosition }),

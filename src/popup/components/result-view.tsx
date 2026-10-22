@@ -30,6 +30,7 @@ export function ResultView({ result, hotkey, markdown }: { result: TranslationRe
           <span className="wrap-break-word whitespace-pre-wrap select-text">{result.text}</span>
         </p>
       );
+    case "streaming":
     case "done":
       if (markdown) return <Markdown text={result.text} />;
       return <p className="leading-relaxed wrap-break-word whitespace-pre-wrap select-text">{result.text}</p>;

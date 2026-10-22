@@ -40,7 +40,7 @@ export function useSettingsForm() {
   };
 
   const save = () => settings && run("Saving...", () => api.saveSettings(settings).then(() => "Saved."));
-  const test = () => settings && run("Translating a test sentence...", () => api.translate(TEST_TEXT, settings.style, "translate", settings));
+  const test = () => settings && run("Translating a test sentence...", () => api.translate(TEST_TEXT, settings.style, "translate", { settings }));
 
   return { settings, styles, languages, status, update, save, test };
 }

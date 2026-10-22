@@ -1,4 +1,5 @@
 use tauri::AppHandle;
+use tauri::ipc::Channel;
 use tauri_plugin_autostart::ManagerExt;
 
 use crate::languages::LANGUAGES;
@@ -41,16 +42,24 @@ pub fn save_settings(app: AppHandle, mut new: Settings) -> Result<(), String> {
     Ok(())
 }
 
-/// `settings` lets the Settings window test values that are not saved yet.
+/// `settings` lets the Settings window test values that are not saved yet. `on_delta` gets the reply piece by piece.
 #[tauri::command]
-pub async fn translate(app: AppHandle, text: String, style: String, mode: Mode, settings: Option<Settings>) -> Result<String, String> {
+pub async fn translate(
+    app: AppHandle,
+    text: String,
+    style: String,
+    mode: Mode,
+    settings: Option<Settings>,
+    on_delta: Channel<String>,
+) -> Result<String, String> {
     let s = settings.unwrap_or_else(|| settings::current(&app));
     let system = match mode {
         Mode::Translate => translate::system_prompt(&s, &s.target_lang, &style),
         Mode::Write => translate::system_prompt(&s, &s.write_lang, &style),
         Mode::Explain => translate::explain_prompt(&s.target_lang),
     };
-    translate::complete(&s, &system, &text).await
+    // A lost piece only costs the live preview: the full reply still comes back as the result.
+    translate::complete(&s, &system, &text, |delta| drop(on_delta.send(delta.to_string()))).await
 }
 
 #[tauri::command]

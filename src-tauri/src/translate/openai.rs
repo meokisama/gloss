@@ -9,11 +9,12 @@ pub fn request(client: &Client, s: &Settings, system: &str, text: &str) -> Reque
     auth(client.post(format!("{}/chat/completions", super::base_url(s))), s).json(&json!({
         "model": s.model,
         "messages": [{ "role": "system", "content": system }, { "role": "user", "content": text }],
+        "stream": true,
     }))
 }
 
-pub fn parse(body: &Value) -> Result<String, String> {
-    Ok(body["choices"][0]["message"]["content"].as_str().unwrap_or_default().to_string())
+pub fn delta(event: &Value) -> Result<String, String> {
+    Ok(event["choices"][0]["delta"]["content"].as_str().unwrap_or_default().to_string())
 }
 
 pub fn models_request(client: &Client, s: &Settings) -> RequestBuilder {

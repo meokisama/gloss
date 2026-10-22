@@ -7,6 +7,7 @@ pub fn request(client: &Client, s: &Settings, system: &str, text: &str) -> Reque
     let mut body = json!({
         "model": s.model,
         "max_tokens": 16000,
+        "stream": true,
         "system": system,
         "messages": [{ "role": "user", "content": text }],
     });
@@ -17,12 +18,13 @@ pub fn request(client: &Client, s: &Settings, system: &str, text: &str) -> Reque
     auth(client.post(format!("{}/v1/messages", super::base_url(s))), s).json(&body)
 }
 
-pub fn parse(body: &Value) -> Result<String, String> {
-    if body["stop_reason"] == "refusal" {
+/// Thinking arrives as `thinking_delta` and is left out.
+pub fn delta(event: &Value) -> Result<String, String> {
+    let delta = &event["delta"];
+    if delta["stop_reason"] == "refusal" {
         return Err("The model declined this request.".into());
     }
-    let blocks = body["content"].as_array().map(Vec::as_slice).unwrap_or_default();
-    Ok(blocks.iter().filter(|b| b["type"] == "text").filter_map(|b| b["text"].as_str()).collect())
+    Ok(if delta["type"] == "text_delta" { delta["text"].as_str().unwrap_or_default().to_string() } else { String::new() })
 }
 
 /// Newest first; 1000 is the page maximum, far above the catalogue size, so one page is all of it.

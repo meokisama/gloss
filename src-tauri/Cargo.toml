@@ -24,8 +24,10 @@ tauri-plugin-store = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 enigo = "0.6.1"
-reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls"] }
+reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls", "stream"] }
 tauri-plugin-updater = "2.14.0"
+eventsource-stream = "0.2.3"
+futures-util = "0.3.34"
 
 # https://tauri.app/concept/size/#cargo-configuration
 [profile.release]

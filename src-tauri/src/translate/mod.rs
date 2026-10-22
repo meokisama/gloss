@@ -5,14 +5,17 @@ mod prompt;
 
 use std::time::Duration;
 
-use reqwest::{Client, RequestBuilder};
+use eventsource_stream::Eventsource;
+use futures_util::StreamExt;
+use reqwest::{Client, RequestBuilder, Response};
 use serde_json::Value;
 
 use crate::settings::{ApiFormat, Settings};
 
 pub use prompt::{STYLES, StylePreset, explain_prompt, system_prompt};
 
-pub async fn complete(s: &Settings, system: &str, text: &str) -> Result<String, String> {
+/// Hands each piece of the reply to `on_delta` as it arrives, then returns the whole reply.
+pub async fn complete(s: &Settings, system: &str, text: &str, on_delta: impl Fn(&str)) -> Result<String, String> {
     if text.chars().count() > s.max_chars {
         return Err(format!("Selection is longer than {} characters (see Settings).", s.max_chars));
     }
@@ -22,15 +25,31 @@ pub async fn complete(s: &Settings, system: &str, text: &str) -> Result<String, 
         ApiFormat::Anthropic => anthropic::request(&client, s, system, text),
         ApiFormat::Gemini => gemini::request(&client, s, system, text),
     };
-    let body = send(request).await?;
+    let mut events = send(request).await?.bytes_stream().eventsource();
 
-    let output = match s.api_format {
-        ApiFormat::Openai => openai::parse(&body),
-        ApiFormat::Anthropic => anthropic::parse(&body),
-        ApiFormat::Gemini => gemini::parse(&body),
-    }?;
+    let mut output = String::new();
+    while let Some(event) = events.next().await {
+        let event = event.map_err(|e| format!("Stream failed: {e}"))?;
+        // OpenAI's end marker; the other formats just close the stream.
+        if event.data == "[DONE]" {
+            break;
+        }
+        let event: Value = serde_json::from_str(&event.data).map_err(|e| format!("Bad stream event: {e}"))?;
+        if let Some(message) = event["error"]["message"].as_str() {
+            return Err(message.to_string());
+        }
+        let delta = match s.api_format {
+            ApiFormat::Openai => openai::delta(&event),
+            ApiFormat::Anthropic => anthropic::delta(&event),
+            ApiFormat::Gemini => gemini::delta(&event),
+        }?;
+        if !delta.is_empty() {
+            on_delta(&delta);
+            output.push_str(&delta);
+        }
+    }
     let output = output.trim();
-    if output.is_empty() { Err(format!("Empty response: {body}")) } else { Ok(output.to_string()) }
+    if output.is_empty() { Err("Empty response.".into()) } else { Ok(output.to_string()) }
 }
 
 pub async fn list_models(s: &Settings) -> Result<Vec<String>, String> {
@@ -40,7 +59,7 @@ pub async fn list_models(s: &Settings) -> Result<Vec<String>, String> {
         ApiFormat::Anthropic => anthropic::models_request(&client, s),
         ApiFormat::Gemini => gemini::models_request(&client, s),
     };
-    let body = send(request).await?;
+    let body: Value = send(request).await?.json().await.unwrap_or(Value::Null);
     Ok(match s.api_format {
         ApiFormat::Openai => openai::parse_models(&body),
         ApiFormat::Anthropic => anthropic::parse_models(&body),
@@ -55,15 +74,15 @@ fn client(s: &Settings) -> Result<Client, String> {
     Client::builder().timeout(Duration::from_secs(s.timeout_secs.max(5))).build().map_err(|e| e.to_string())
 }
 
-async fn send(request: RequestBuilder) -> Result<Value, String> {
+async fn send(request: RequestBuilder) -> Result<Response, String> {
     let response = request.send().await.map_err(|e| format!("Request failed: {e}"))?;
     let status = response.status();
-    let body: Value = response.json().await.unwrap_or(Value::Null);
-    if !status.is_success() {
-        let message = body["error"]["message"].as_str().map(str::to_string).unwrap_or_else(|| body.to_string());
-        return Err(format!("HTTP {}: {message}", status.as_u16()));
+    if status.is_success() {
+        return Ok(response);
     }
-    Ok(body)
+    let body: Value = response.json().await.unwrap_or(Value::Null);
+    let message = body["error"]["message"].as_str().map(str::to_string).unwrap_or_else(|| body.to_string());
+    Err(format!("HTTP {}: {message}", status.as_u16()))
 }
 
 fn base_url(s: &Settings) -> &str {
