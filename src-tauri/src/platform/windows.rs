@@ -3,6 +3,7 @@ use std::time::{Duration, Instant};
 
 use enigo::{Direction, Key, Keyboard};
 use tauri::{App, AppHandle};
+use windows_sys::Win32::UI::Input::KeyboardAndMouse::{GetAsyncKeyState, VIRTUAL_KEY, VK_LWIN, VK_MENU, VK_SHIFT};
 use windows_sys::Win32::UI::WindowsAndMessaging::{GetForegroundWindow, SetForegroundWindow};
 
 const FOCUS_TIMEOUT: Duration = Duration::from_millis(500);
@@ -46,11 +47,19 @@ fn send_ctrl(key: Key) -> Result<(), String> {
         // Ctrl first, so Alt or Win is never released alone (menu bar, Start menu).
         e.key(Key::Control, Direction::Press)?;
         // The hotkey's modifiers are usually still held; Ctrl+Alt+C is not a copy.
-        for modifier in [Key::Alt, Key::Shift, Key::Meta] {
-            e.key(modifier, Direction::Release)?;
+        // Only release held ones: a stray Alt release makes Notepad show its access keys.
+        for (modifier, vk) in [(Key::Alt, VK_MENU), (Key::Shift, VK_SHIFT), (Key::Meta, VK_LWIN)] {
+            if held(vk) {
+                e.key(modifier, Direction::Release)?;
+            }
         }
         e.key(key, Direction::Click)?;
         e.key(Key::Control, Direction::Release)
     };
     run().map_err(|err| err.to_string())
+}
+
+fn held(vk: VIRTUAL_KEY) -> bool {
+    // The high bit, so the sign, says the key is down now.
+    unsafe { GetAsyncKeyState(vk.into()) < 0 }
 }

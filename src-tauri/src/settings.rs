@@ -92,9 +92,9 @@ pub struct Settings {
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            hotkey: "Alt+O".into(),
-            write_hotkey: "Alt+P".into(),
-            explain_hotkey: "Alt+I".into(),
+            hotkey: "Ctrl+Shift+O".into(),
+            write_hotkey: "Ctrl+Shift+P".into(),
+            explain_hotkey: "Ctrl+Shift+I".into(),
             launch_at_login: false,
             api_format: ApiFormat::Openai,
             base_url: "https://api.openai.com/v1".into(),

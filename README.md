@@ -29,11 +29,11 @@ explains what it is and how it works. Bring any AI provider, cloud or local.
 
 ## Three shortcuts
 
-| Shortcut | What it does                                                                                                |
-| :------: | ----------------------------------------------------------------------------------------------------------- |
-| `Alt+O`  | **Read.** Translates the selection into your language and shows it in a popup at the cursor.                |
-| `Alt+P`  | **Write.** Translates your own text into the target language and pastes it back, with or without a preview. |
-| `Alt+I`  | **Explain.** Looks up what a term, concept, product or acronym is and how it works, with worked examples.   |
+|    Shortcut    | What it does                                                                                                |
+| :------------: | ----------------------------------------------------------------------------------------------------------- |
+| `Ctrl+Shift+O` | **Read.** Translates the selection into your language and shows it in a popup at the cursor.                |
+| `Ctrl+Shift+P` | **Write.** Translates your own text into the target language and pastes it back, with or without a preview. |
+| `Ctrl+Shift+I` | **Explain.** Looks up what a term, concept, product or acronym is and how it works, with worked examples.   |
 
 All shortcuts are configurable. Read and Write each have their own language and style that you can switch from the tray menu.
 Explain answers in the Read language.
@@ -55,8 +55,8 @@ Explain answers in the Read language.
 
 1. Install Gloss and launch it. It appears in the system tray.
 2. Left click the tray icon to open Settings, pick a provider, enter your API key and choose a model.
-3. Select some text anywhere and press `Alt+O`. To translate your own writing, select it and press `Alt+P`. To look up what
-   something is, select it and press `Alt+I`.
+3. Select some text anywhere and press `Ctrl+Shift+O`. To translate your own writing, select it and press `Ctrl+Shift+P`. To
+   look up what something is, select it and press `Ctrl+Shift+I`.
 
 ## Providers
 
