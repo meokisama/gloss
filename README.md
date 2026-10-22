@@ -33,7 +33,7 @@ explains what it is and how it works. Bring any AI provider, cloud or local.
 | :------------: | ----------------------------------------------------------------------------------------------------------- |
 | `Ctrl+Shift+O` | **Read.** Translates the selection into your language and shows it in a popup at the cursor.                |
 | `Ctrl+Shift+P` | **Write.** Translates your own text into the target language and pastes it back, with or without a preview. |
-| `Ctrl+Shift+I` | **Explain.** Looks up what a term, concept, product or acronym is and how it works, with worked examples.   |
+| `Ctrl+Shift+I` | **Explain.** Explains a term, concept, product or acronym, or gives a dictionary entry for an everyday word. |
 
 All shortcuts are configurable. Read and Write each have their own language and style that you can switch from the tray menu.
 Explain answers in the Read language.
@@ -46,6 +46,8 @@ Explain answers in the Read language.
 - **Keeps the intent.** A question stays a question and a request stays a request; Gloss translates, it does not answer.
 - **Explains, not just defines.** Says what the thing is, why it exists and how it works step by step, with real examples
   and every technical term spelled out.
+- **Learns words with you.** Select an everyday word or phrase and Explain gives its pronunciation, meanings, when to use it
+  and example sentences with translations.
 - **Your popup, your way.** Open at the cursor, above it, centered, top right, or where you last left it. Adjustable width,
   height, font size and light or dark theme.
 - **Stays out of the way.** Lives in the tray, closes when you click elsewhere, can copy the result automatically and launch at
